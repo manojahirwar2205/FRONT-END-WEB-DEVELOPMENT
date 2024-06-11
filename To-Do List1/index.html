@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO-DO List Application</title>
+    <!---- using CSS ---->
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    background-color: rgb(201, 198, 193);
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 10px;
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #ddd;
+}
+
+.card-header form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.card-header input, .card-header select, .card-header button {
+    padding: 10px;
+    font-size: 14px;
+}
+
+#task-input {
+    flex: 2;
+}
+
+#due-date, #task-category {
+    flex: 1;
+}
+
+.card-header button {
+    flex: 0 0 auto;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.card-header button:hover {
+    background-color: #0056b3;
+}
+
+.task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.task-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.task-list li:last-child {
+    border-bottom: none;
+}
+
+.task-list li .task-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.task-list li .task-content span {
+    margin-bottom: 5px;
+}
+
+.task-list li .task-content .completed {
+    text-decoration: line-through;
+    color: gray;
+}
+
+.task-list li .task-content .category {
+    font-size: 12px;
+    font-style: italic;
+    color: #6c757d;
+}
+
+.task-list li button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    font-size: 12px;
+    border: none;
+    cursor: pointer;
+}
+
+.task-list li .complete-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.task-list li .complete-btn:hover {
+    background-color: #218838;
+}
+
+.task-list li .delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.task-list li .delete-btn:hover {
+    background-color: #c82333;
+}
+
+    </style>
+</head>
+<!--  using HTML --->
+<body>
+    <div class="container">
+        <h1>TO-DO List Application</h1>
+        <div class="card">
+            <div class="card-header">
+                <form id="task-form">
+                    <input type="text" id="task-input" placeholder="Enter task" required>
+                    <input type="date" id="due-date">
+                    <select id="task-category">
+                        <option value="">Select Category</option>
+                        <option value="Work">Work</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Shopping">Study</option>
+                    </select>
+                    <button type="submit">Add Task</button>
+                </form>
+            </div>
+            <ul id="task-list" class="task-list">
+                
+            </ul>
+        </div>
+    </div>
+    <!----  using of js ---->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const taskForm = document.getElementById('task-form');
+    const taskList = document.getElementById('task-list');
+    const taskInput = document.getElementById('task-input');
+    const dueDateInput = document.getElementById('due-date');
+    const taskCategoryInput = document.getElementById('task-category');
+
+    taskForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const taskText = taskInput.value.trim();
+        const dueDate = dueDateInput.value;
+        const category = taskCategoryInput.value;
+
+        if (taskText === '') return;
+
+        const taskItem = document.createElement('li');
+
+        const taskContent = document.createElement('div');
+        taskContent.className = 'task-content';
+
+        const taskTextSpan = document.createElement('span');
+        taskTextSpan.textContent = taskText;
+        taskContent.appendChild(taskTextSpan);
+
+        if (dueDate) {
+            const dueDateSpan = document.createElement('span');
+            dueDateSpan.className = 'due-date';
+            dueDateSpan.textContent = `Due: ${dueDate}`;
+            taskContent.appendChild(dueDateSpan);
+        }
+
+        if (category) {
+            const categorySpan = document.createElement('span');
+            categorySpan.className = 'category';
+            categorySpan.textContent = `Category: ${category}`;
+            taskContent.appendChild(categorySpan);
+        }
+
+        taskItem.appendChild(taskContent);
+
+        const actionsDiv = document.createElement('div');
+
+        const completeBtn = document.createElement('button');
+        completeBtn.className = 'complete-btn';
+        completeBtn.textContent = 'Complete';
+        completeBtn.onclick = function() {
+            taskTextSpan.classList.toggle('completed');
+        };
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.onclick = function() {
+            taskList.removeChild(taskItem);
+        };
+
+        actionsDiv.appendChild(completeBtn);
+        actionsDiv.appendChild(deleteBtn);
+        taskItem.appendChild(actionsDiv);
+
+        taskList.appendChild(taskItem);
+
+        taskInput.value = '';
+        dueDateInput.value = '';
+        taskCategoryInput.value = '';
+    });
+});
+
+    </script>
+</body>
+</html>
